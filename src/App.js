@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Post from './Post';
+import { db } from './firebase';
 
 function App() {
 
-  const[posts, setPosts] = useState([
-    {username: "virejdasani",
-     caption: "This is a caption",
-     imageUrl: "https://www.andreasreiterer.at/wp-content/uploads/2017/11/react-logo-825x510.jpg"
-    },
+  const[posts, setPosts] = useState([]);
 
-    {username: "jetbrains",
-     caption: "Caption",
-     imageUrl: "https://xpertlab.com/wp-content/uploads/2020/01/pyCharm.png"
-    }
+// This is to fetch data from firebase
+  // This is excecuted every time a new post is added
+  useEffect(() => {
     
-  ]);
+    db.collection('posts').onSnapshot(snapshot => {
 
+      // This is like a loop to go over all the posts in firebase
+      setPosts(snapshot.docs.map(doc => doc.data()))
+    
+    })
+    
+  }, [])
+
+// App Layout
   return (
     <div className="app">
       <div className="app__header">
